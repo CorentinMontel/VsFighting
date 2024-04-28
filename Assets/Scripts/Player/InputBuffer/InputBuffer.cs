@@ -13,11 +13,16 @@ namespace Player.InputBuffer
             _playerInput = playerInput;
         }
 
-        public void Enqueue(InputAction action)
+        public void Enqueue(InputAction action, List<string> excludes)
         {
             if (action.isEmpty)
             {
                 return;
+            }
+
+            if (action.isJumping && excludes != null && excludes.Contains("jump"))
+            {
+                action.isJumping = false;
             }
             nextAction = action;
         }

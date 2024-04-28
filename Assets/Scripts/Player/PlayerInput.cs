@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Player.InputBuffer;
@@ -16,6 +17,7 @@ namespace Player
         private InputAction bufferedInput = null;
 
         private bool _buffering = false;
+        private List<string> _excludes = new();
 
         public PlayerInput()
         {
@@ -36,14 +38,16 @@ namespace Player
             }
         }
         
-        public void EnableBuffering(string[] excludes = null)
+        public void EnableBuffering(List<string> excludes = null)
         {
             _buffering = true;
+            _excludes = excludes;
         }
 
         public void DisableBuffering()
         {
             _buffering = false;
+            _excludes = new ();
         }
 
         public void Update()
@@ -53,7 +57,7 @@ namespace Player
 
             if (_buffering)
             {
-                _inputBuffer.Enqueue(currentInput);
+                _inputBuffer.Enqueue(currentInput.Clone(), _excludes);
                 return;
             }
 

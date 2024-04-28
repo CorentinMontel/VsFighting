@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Lib.StateMachine;
 using UnityEngine;
 
@@ -29,16 +30,17 @@ namespace Player.StateMachine
             {
                 _playerManager.PlayerInput.EnableBuffering();
             }
+            else
+            {
+                _playerManager.PlayerInput.EnableBuffering(new List<string>{"jump"});
+            }
         }
 
         public override void Exit()
         {
             _playerAnimator.SetBool(PlayerAnimation.Jumping, false);
             
-            if (_currentJumps >= _playerManager.maxJumps)
-            {
-                _playerManager.PlayerInput.DisableBuffering();
-            }
+            _playerManager.PlayerInput.DisableBuffering();
         }
 
         public override void Update()
