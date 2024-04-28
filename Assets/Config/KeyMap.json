@@ -1,0 +1,19 @@
+{
+  "Bindings": [
+    {
+      "Name": "jump",
+      "Key": "Space",
+      "Description": "Perform a jump"
+    },
+    {
+      "Name": "slide",
+      "Key": "Q",
+      "Description": "Slide on the ground"
+    },
+    {
+      "Name": "simple_attack",
+      "Key": "E",
+      "Description": "Perform a simple attack"
+    }
+  ]
+}
