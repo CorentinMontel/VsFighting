@@ -1,15 +1,17 @@
 namespace Player.InputBuffer.Actions
 {
-    public class SimpleAttackAction: AbstractAction
+    public class GenericAction: AbstractAction
     {
+        public string name;
+
         protected override bool LoadValue(PlayerInput playerInput)
         {
-            return playerInput.IsSimpleAttack(false);
+            return false;
         }
 
         public override string GetName()
         {
-            return "simple_attack";
+            return name;
         }
     }
 }

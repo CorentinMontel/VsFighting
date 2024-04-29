@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Player.InputBuffer;
+using Player.InputBuffer.Actions;
 using UnityEngine;
 
 namespace Player
 {
     public class PlayerInput
     {
-        private static PlayerInput _instance = null;
-
         private Dictionary<string, KeyAttribution> availableKeys = new Dictionary<string, KeyAttribution>();
 
         private InputBuffer.InputBuffer _inputBuffer;
@@ -76,6 +75,11 @@ namespace Player
                 currentInput = bufferedInput;
                 bufferedInput = null;
             }
+            
+            if (currentInput is { isEmpty: false })
+            {
+                //Debug.Log(currentInput);
+            }
         }
         
         public float GetHorizontalAxis()
@@ -83,40 +87,28 @@ namespace Player
             return Input.GetAxis("Horizontal");
         }
 
-        private bool GetKeyDown(string name, bool defaultValue, bool fromInputAction = true)
+        private bool GetKeyDown(ActionEnum actionName, bool defaultValue, bool fromInputAction = true)
         {
             if (fromInputAction)
             {
                 return defaultValue;
             }
-            return Input.GetKeyDown(availableKeys[name].Code);
+            return Input.GetKeyDown(availableKeys[actionName.Value].Code);
         }
 
         public bool IsJumping(bool fromInputAction = true)
         {
-            return GetKeyDown("jump", currentInput?.isJumping ?? false, fromInputAction);
+            return GetKeyDown(ActionEnum.Jump, currentInput?.GetActionValue(ActionEnum.Jump) ?? false, fromInputAction);
         }
 
         public bool IsSliding(bool fromInputAction = true)
         {
-            return GetKeyDown("slide", currentInput?.isSliding ?? false, fromInputAction);
+            return GetKeyDown(ActionEnum.Slide, currentInput?.GetActionValue(ActionEnum.Slide) ?? false, fromInputAction);
         }
 
         public bool IsSimpleAttack(bool fromInputAction = true)
         {
-            return GetKeyDown("simple_attack", currentInput?.isSimpleAttack ?? false, fromInputAction);
-        }
-
-        public static PlayerInput GetSingletonInstance()
-        {
-            if (null == _instance)
-            {
-                _instance = new PlayerInput();
-                Debug.LogWarning("PlayerInput Singleton instance loaded. Remove it before final build");
-            }
-
-            Debug.Log("PlayerInput Singleton instance given");
-            return _instance;
+            return GetKeyDown(ActionEnum.SimpleAttack, currentInput?.GetActionValue(ActionEnum.SimpleAttack) ?? false, fromInputAction);
         }
         
         [System.Serializable]

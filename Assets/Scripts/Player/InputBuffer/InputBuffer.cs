@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Player.InputBuffer.Actions;
 using UnityEngine;
 
 namespace Player.InputBuffer
@@ -20,9 +21,19 @@ namespace Player.InputBuffer
                 return;
             }
 
-            if (action.isJumping && excludes != null && excludes.Contains("jump"))
+            if (action.GetActionValue(ActionEnum.Jump) && ExcludesContains(ActionEnum.Jump, excludes))
             {
-                action.isJumping = false;
+                action.SetActionValue(ActionEnum.Jump, false);
+            }
+            
+            if (action.GetActionValue(ActionEnum.Slide) && ExcludesContains(ActionEnum.Slide, excludes))
+            {
+                action.SetActionValue(ActionEnum.Jump, false);
+            }
+            
+            if (action.GetActionValue(ActionEnum.SimpleAttack) && ExcludesContains(ActionEnum.SimpleAttack, excludes))
+            {
+                action.SetActionValue(ActionEnum.SimpleAttack, false);
             }
             nextAction = action;
         }
@@ -47,6 +58,11 @@ namespace Player.InputBuffer
         private void ResetBuffer()
         {
             nextAction = null;
+        }
+
+        private bool ExcludesContains(ActionEnum action, List<string> excludes)
+        {
+            return excludes != null && excludes.Contains(action.Value);
         }
     }
 }

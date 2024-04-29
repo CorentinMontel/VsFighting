@@ -2,9 +2,14 @@ namespace Player.InputBuffer.Actions
 {
     public class SlideAction: AbstractAction
     {
-        protected override bool GetValue(PlayerInput playerInput)
+        protected override bool LoadValue(PlayerInput playerInput)
         {
-            throw new System.NotImplementedException();
+            return playerInput.IsSliding(false);
+        }
+
+        public override string GetName()
+        {
+            return "slide";
         }
     }
 }
