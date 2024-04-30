@@ -6,13 +6,7 @@ namespace Player.InputBuffer
 {
     public class InputBuffer
     {
-        private readonly PlayerInput _playerInput;
         private InputAction nextAction = null;
-        
-        public InputBuffer(PlayerInput playerInput)
-        {
-            _playerInput = playerInput;
-        }
 
         public void Enqueue(InputAction action, List<string> excludes)
         {

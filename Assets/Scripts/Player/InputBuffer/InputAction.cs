@@ -1,24 +1,19 @@
 using System;
 using System.Collections.Generic;
+using DefaultNamespace;
 using Player.InputBuffer.Actions;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Player.InputBuffer
 {
     public class InputAction
     {
-        public const float DefaultDuration = 0.5f;
-
-        /*public bool isJumping = false;
-        public bool isSliding = false;
-        public bool isSimpleAttack = false;*/
         public bool isEmpty = false;
 
         private float _expiresAt;
-        private List<AbstractAction> actions = null;
+        private Dictionary<ActionEnum, AbstractAction> actions = null;
 
-        public InputAction(float duration = DefaultDuration, bool loadEmpty = false)
+        public InputAction(float duration = GameConfig.INPUT_BUFFER_DELAY_SEC, bool loadEmpty = false)
         {
             _expiresAt = Time.time + duration;
 
@@ -28,17 +23,17 @@ namespace Player.InputBuffer
             }
             else
             {
-                actions = new List<AbstractAction>();
+                actions = new Dictionary<ActionEnum, AbstractAction>();
             }
         }
 
         private void LoadActions()
         {
-            actions = new List<AbstractAction>
+            actions = new Dictionary<ActionEnum, AbstractAction>
             {
-                new JumpAction(),
-                new SlideAction(),
-                new SimpleAttackAction(),
+                { ActionEnum.Jump, new JumpAction() },
+                { ActionEnum.Slide, new SlideAction() },
+                { ActionEnum.SimpleAttack, new SimpleAttackAction() },
             };
         }
 
@@ -47,11 +42,11 @@ namespace Player.InputBuffer
             return Time.time > _expiresAt;
         }
 
-        public static InputAction FromInput(PlayerInput playerInput, float duration = DefaultDuration)
+        public static InputAction FromInput(PlayerInput playerInput, float duration = GameConfig.INPUT_BUFFER_DELAY_SEC)
         {
             InputAction instance = new InputAction(duration);
 
-            foreach (AbstractAction action in instance.actions)
+            foreach (AbstractAction action in instance.actions.Values)
             {
                 action.Load(playerInput);
             }
@@ -63,32 +58,22 @@ namespace Player.InputBuffer
 
         public bool GetActionValue(ActionEnum actionName)
         {
-            foreach (AbstractAction action in actions)
-            {
-                if (action.GetName() == actionName.Value)
-                {
-                    return action.GetValue();
-                }
-            }
-
-            return false;
+            return actions.ContainsKey(actionName) && actions[actionName].GetValue();
         }
         
         public void SetActionValue(ActionEnum actionName, bool value)
         {
-            foreach (AbstractAction action in actions)
+            if (!actions.ContainsKey(actionName))
             {
-                if (action.GetName() == actionName.Value)
-                {
-                    action.SetValue(value);
-                    break;
-                }
+                return;
             }
+            
+            actions[actionName].SetValue(value);
         }
 
         public void ComputeEmpty()
         {
-            foreach (AbstractAction action in actions)
+            foreach (AbstractAction action in actions.Values)
             {
                 if (!action.IsEmpty())
                 {
@@ -105,9 +90,9 @@ namespace Player.InputBuffer
 
             newAction.isEmpty = isEmpty;
 
-            foreach (AbstractAction action in actions)
+            foreach (ActionEnum actionName in actions.Keys)
             {
-                newAction.actions.Add(action.Clone());
+                newAction.actions.Add(actionName, actions[actionName].Clone());
             }
 
             return newAction;
@@ -116,7 +101,7 @@ namespace Player.InputBuffer
         public override string ToString()
         {
             List<string> actions = new List<string>();
-            foreach (AbstractAction action in this.actions)
+            foreach (AbstractAction action in this.actions.Values)
             {
                 actions.Add(action.GetName() + " = " + (action.GetValue() ? "TRUE" : "FALSE"));
             }

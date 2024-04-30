@@ -21,7 +21,7 @@ namespace Player
         public PlayerInput()
         {
             LoadKeyMap();
-            _inputBuffer = new InputBuffer.InputBuffer(this);
+            _inputBuffer = new InputBuffer.InputBuffer();
         }
 
         private void LoadKeyMap()
