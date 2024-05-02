@@ -2,6 +2,8 @@ namespace DefaultNamespace
 {
     public class GameConfig
     {
-        public const float INPUT_BUFFER_DELAY_SEC = 0.5f;
+        public const float InputBufferDelaySec = 0.5f;
+
+        public const float EnemyViewDistance = 10f;
     }
 }

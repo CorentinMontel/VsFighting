@@ -13,7 +13,7 @@ namespace Player.InputBuffer
         private float _expiresAt;
         private Dictionary<ActionEnum, AbstractAction> actions = null;
 
-        public InputAction(float duration = GameConfig.INPUT_BUFFER_DELAY_SEC, bool loadEmpty = false)
+        public InputAction(float duration = GameConfig.InputBufferDelaySec, bool loadEmpty = false)
         {
             _expiresAt = Time.time + duration;
 
@@ -42,7 +42,7 @@ namespace Player.InputBuffer
             return Time.time > _expiresAt;
         }
 
-        public static InputAction FromInput(PlayerInput playerInput, float duration = GameConfig.INPUT_BUFFER_DELAY_SEC)
+        public static InputAction FromInput(PlayerInput playerInput, float duration = GameConfig.InputBufferDelaySec)
         {
             InputAction instance = new InputAction(duration);
 
